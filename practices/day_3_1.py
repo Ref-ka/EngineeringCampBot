@@ -27,7 +27,7 @@ def fetchall(database: str, table: str, columns: List[str], where=None) -> List[
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 class BotsCommands:
-    def init(self, bot: Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.database = 'user_data.db'
         self.create_table()
@@ -77,7 +77,7 @@ class BotsCommands:
             self.bot.send_message(message.chat.id, "Информация о вас не найдена.")
 
 class QuestionListener(Listener):
-    def init(self, bot, message, column_name, next_question_index):
+    def __init__(self, bot, message, column_name, next_question_index):
         self.bot = bot
         self.message = message
         self.column_name = column_name
@@ -94,7 +94,7 @@ class QuestionListener(Listener):
             bots_commands.save_user_data(self.message, self.user_data)
 
 class MessageListener(Listener):
-    def init(self, bot):
+    def __init__(self, bot):
         self.bot = bot
         self.m_count = 0
 
@@ -108,7 +108,7 @@ class MessageListener(Listener):
         else:
             self.bot.send_message(message.chat.id, f"Ошибка в команде:\n{err}")
 
-if name == "main":
+if __name__ == "main":
     token = argv[1] if len(argv) > 1 else input("Введите токен ТГ-бота: ")
     bot = Bot(token)
 

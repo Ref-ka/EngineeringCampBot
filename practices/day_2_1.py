@@ -5,7 +5,7 @@ from origamibot import OrigamiBot as Bot
 from origamibot.listener import Listener
 
 class BotsCommands:
-    def init(self, bot: Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
     def greet(self, message):  # команда /привет
@@ -15,7 +15,7 @@ class BotsCommands:
         self.bot.send_message(message.chat.id, "Пока, до свидания!")
 
 class MessageListener(Listener):
-    def init(self, bot):
+    def __init__(self, bot):
         self.bot = bot
 
     def on_message(self, message):

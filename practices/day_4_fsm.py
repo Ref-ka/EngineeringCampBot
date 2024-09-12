@@ -19,7 +19,7 @@ fsm = {
 }
 
 class BotsCommands:
-    def init(self, bot: Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
         self.database = 'user_data.db'
         self.create_table()
@@ -90,7 +90,7 @@ class BotsCommands:
             self.bot.send_message(message.chat.id, "Информация о вас не найдена.")
 
 class AnswerListener(Listener):
-    def init(self, bot, message, column_name, user_id):
+    def __init__(self, bot, message, column_name, user_id):
         self.bot = bot
         self.message = message
         self.column_name = column_name
@@ -104,7 +104,7 @@ class AnswerListener(Listener):
         bots_commands.ask_question(self.message)
 
 class MessageListener(Listener):
-    def init(self, bot):
+    def __init__(self, bot):
         self.bot = bot
         self.m_count = 0
 
@@ -118,7 +118,7 @@ class MessageListener(Listener):
         else:
             self.bot.send_message(message.chat.id, f"Ошибка в команде:\n{err}")
 
-if name == "main":
+if __name__ == "main":
     token = argv[1] if len(argv) > 1 else input("Введите токен ТГ-бота: ")
     bot = Bot(token)
 

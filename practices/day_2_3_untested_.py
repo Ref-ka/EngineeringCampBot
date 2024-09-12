@@ -8,7 +8,7 @@ from origamibot import OrigamiBot as Bot
 from origamibot.listener import Listener
 
 class BotsCommands:
-    def init(self, bot: Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
     def start(self, message):  # действия на команду /start
@@ -40,7 +40,7 @@ class BotsCommands:
         print("I am not a command")
 
 class MessageListener(Listener):
-    def init(self, bot):
+    def __init__(self, bot):
         self.bot = bot
         self.m_count = 0
 
