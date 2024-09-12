@@ -118,7 +118,7 @@ class MessageListener(Listener):
         else:
             self.bot.send_message(message.chat.id, f"Ошибка в команде:\n{err}")
 
-if __name__ == "main":
+if __name__ == "__main__":
     token = argv[1] if len(argv) > 1 else input("Введите токен ТГ-бота: ")
     bot = Bot(token)
 
