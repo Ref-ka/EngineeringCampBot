@@ -1,49 +1,36 @@
+import telebot
 
-from sys import argv
-from time import sleep
-from origamibot import OrigamiBot as Bot
-from origamibot.listener import Listener
+# Замените 'YOUR_API_TOKEN' на токен вашего бота, который вы получили от BotFather
+API_TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'
 
-class BotsCommands:
-    def __init__(self, bot: Bot):
-        self.bot = bot
+bot = telebot.TeleBot(API_TOKEN)
 
-    def start(self, message):  # команда /start
-        user_first_name = message.from_user.first_name  # Получаем имя пользователя
-        self.bot.send_message(message.chat.id, f"Привет, {user_first_name}!\nЭто пример бота.")
+# Обработчик команды /start
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    username = message.from_user.first_name
+    if username:
+        bot.reply_to(message, f"Привет, {username}! Я ваш дружелюбный бот. Как я могу помочь вам сегодня?")
+    else:
+        bot.reply_to(message, "Привет! Я ваш дружелюбный бот. Как я могу помочь вам сегодня?")
 
-    def greet(self, message):  # команда /greet
-        user_first_name = message.from_user.first_name
-        self.bot.send_message(message.chat.id, f"Привет, {user_first_name}!")
+# Обработчик команды /bye
+@bot.message_handler(commands=['bye'])
+def send_goodbye(message):
+    username = message.from_user.first_name
+    if username:
+        bot.reply_to(message, f"До свидания, {username}! Надеюсь, скоро увидимся снова.")
+    else:
+        bot.reply_to(message, "До свидания! Надеюсь, скоро увидимся снова.")
 
-    def goodbye(self, message):  # команда /goodbye
-        user_first_name = message.from_user.first_name
-        self.bot.send_message(message.chat.id, f"Пока, {user_first_name}, до свидания!")
+# Обработчик текстовых сообщений
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+    username = message.from_user.first_name
+    if username:
+        bot.reply_to(message, f"Извините, {username}, я вас не понял. Попробуйте использовать команды /start или /bye.")
+    else:
+        bot.reply_to(message, "Извините, я вас не понял. Попробуйте использовать команды /start или /bye.")
 
-class MessageListener(Listener):
-    def __init__(self, bot):
-        self.bot = bot
-
-    def on_message(self, message):
-        print(f"Получено сообщение: {message.text}")
-
-    def on_command_failure(self, message, err=None):
-        if err is None:
-            self.bot.send_message(message.chat.id, "Ошибка при выполнении команды!")
-        else:
-            self.bot.send_message(message.chat.id, f"Ошибка в команде:\n{err}")
-
-if __name__ == "__main__":
-    token = argv[1] if len(argv) > 1 else input("Введите токен ТГ-бота: ")
-    bot = Bot(token)
-
-    # Добавить события к прослушке
-    bot.add_listener(MessageListener(bot))
-
-    # Добавить команды
-    bot.add_commands(BotsCommands(bot))
-
-    bot.start()  # запускаем бота
-    while True:
-        sleep(1)
-
+# Запуск бота
+bot.polling()

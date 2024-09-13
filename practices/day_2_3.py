@@ -1,70 +1,45 @@
-
-from sys import argv
-from time import sleep
+import telebot
 import random
-from datetime import datetime
+import datetime
 
-from origamibot import OrigamiBot as Bot
-from origamibot.listener import Listener
 
-class BotsCommands:
-    def __init__(self, bot: Bot):
-        self.bot = bot
+# Получение токена из переменной окружения
+TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'
 
-    def start(self, message):  # действия на команду /start
-        self.bot.send_message(message.chat.id, "Привет! Я бот. Используйте команды /time, /roll и /joke.")
+# Инициализация бота
+bot = telebot.TeleBot(TOKEN)
 
-    def echo(self, message, value: str):  # команда /echo [значение: str]
-        self.bot.send_message(message.chat.id, value)
+# Список шуток про программистов
+jokes = [
+    "Почему программисты не любят природу? Слишком много багов.",
+    "Сколько программистов нужно, чтобы вкрутить лампочку? Ни одного, это аппаратная проблема.",
+    "Почему программисты путают Рождество с Хэллоуином? Потому что Oct 31 == Dec 25.",
+    "Программист заходит в бар, заказывает 1 пиво. Заказывает 10 пива. Заказывает 0 пива. Заказывает -1 пива. Заказывает qwerty пива."
+]
 
-    def add(self, message, a: float, b: float):  # команда сложения чисел
-        self.bot.send_message(message.chat.id, str(a + b))
+# Обработчик команды /start
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    bot.reply_to(message, "Привет! Я бот, который может сообщить текущее время, выдать случайное число и рассказать шутку про программистов. Используй команды /time, /random и /joke.")
 
-    def time(self, message):  # команда для получения текущей даты и времени
-        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.bot.send_message(message.chat.id, f"Текущая дата и время: {current_time}")
+# Обработчик команды /time
+@bot.message_handler(commands=['time'])
+def send_time(message):
+    now = datetime.datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    bot.reply_to(message, f"Сейчас {current_time}")
 
-    def roll(self, message):  # команда броска кубика
-        result = random.randint(1, 6)
-        self.bot.send_message(message.chat.id, f"Вы бросили кубик и получили: {result}")
+# Обработчик команды /random
+@bot.message_handler(commands=['random'])
+def send_random_number(message):
+    random_number = random.randint(1, 100)
+    bot.reply_to(message, f"Случайное число: {random_number}")
 
-    def joke(self, message):  # команда для отправки случайной шутки
-        jokes = [
-            "Почему программисты предпочитают тьму? Потому что свет притягивает жуков!",
-            "Как программист называет свой компьютер? 'Своим личным сервером!'",
-            "Почему у программистов нет друзей? Потому что они всегда все отлаживают!"
-        ]
-        self.bot.send_message(message.chat.id, random.choice(jokes))
+# Обработчик команды /joke
+@bot.message_handler(commands=['joke'])
+def send_joke(message):
+    joke = random.choice(jokes)
+    bot.reply_to(message, joke)
 
-    def _not_a_command(self):  # Не команда, недоступна из чата Телеграмм
-        print("I am not a command")
-
-class MessageListener(Listener):
-    def __init__(self, bot):
-        self.bot = bot
-        self.m_count = 0
-
-    def on_message(self, message):  # Вызывается при любом сообщении
-        self.m_count += 1
-        print(f"Всего сообщений: {self.m_count}")
-
-    def on_command_failure(self, message, err=None):  # Вызывается, когда команда вызывает ошибку
-        if err is None:
-            self.bot.send_message(message.chat.id, "Провал при привязке аргументов к команде!")
-        else:
-            self.bot.send_message(message.chat.id, f"Ошибка в команде:\n{err}")
-
-if __name__ == "__main__":
-    token = argv[1] if len(argv) > 1 else input("Введите токен ТГ-бота: ")
-    bot = Bot(token)
-
-    # Добавить события к прослушке
-    bot.add_listener(MessageListener(bot))
-
-    # Добавить команды
-    bot.add_commands(BotsCommands(bot))
-
-    bot.start()  # запускаем бота
-    while True:
-        sleep(1)
-
+# Запуск бота
+bot.polling()
