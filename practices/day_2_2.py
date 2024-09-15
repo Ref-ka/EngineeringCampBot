@@ -1,4 +1,5 @@
 import telebot
+from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
 # Замените 'YOUR_API_TOKEN' на токен вашего бота, который вы получили от BotFather
 API_TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'
@@ -7,6 +8,14 @@ bot = telebot.TeleBot(API_TOKEN)
 
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
+def start(message):
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"))
+    bot.send_message(message.chat.id, "Я умею здороваться и прощаться! Используйте команды /greet и /bye",
+                     reply_markup=markup)
+
+# Обработчик команды /greet
+@bot.message_handler(commands=['greet'])
 def send_welcome(message):
     username = message.from_user.first_name
     if username:
