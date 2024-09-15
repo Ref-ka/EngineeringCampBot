@@ -2,24 +2,19 @@ import telebot
 from telebot.handler_backends import State, StatesGroup
 from telebot.storage import StateMemoryStorage
 from telebot.custom_filters import StateFilter
-import sqlite3
+
 from datetime import datetime
+import easy_sql
 
-# Создаем соединение с базой данных SQLite
-conn = sqlite3.connect('tasks.db', check_same_thread=False)
-cursor = conn.cursor()
-
-# Создаем таблицу tasks, если она не существует
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS tasks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    title TEXT,
-    description TEXT,
-    due_date TEXT
-)
-''')
-conn.commit()
+'''
+У вас должна быть создана база данных с названием tasks.db, названием таблицы tasks,
+колонками:
+id, integer, primary key, autoincrement
+user_id, integer
+title text
+description text
+due_date text
+'''
 
 # Инициализация бота
 API_TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'
@@ -65,10 +60,11 @@ def enter_due_date(message):
     try:
         due_date = datetime.strptime(message.text, '%Y-%m-%d')
         with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
-            cursor.execute('''
-                INSERT INTO tasks (user_id, title, description, due_date) VALUES (?, ?, ?, ?)
-            ''', (message.from_user.id, data['title'], data['description'], due_date.strftime('%Y-%m-%d')))
-            conn.commit()
+            easy_sql.insert('tasks.db', 'tasks',
+                            {'user_id': message.from_user.id,
+                             'title': data['title'],
+                             'description': data['description'],
+                             'due_date': due_date.strftime('%Y-%m-%d')})
         bot.send_message(message.chat.id, "Задача успешно добавлена!")
         bot.delete_state(message.from_user.id, message.chat.id)
     except ValueError:
@@ -77,12 +73,13 @@ def enter_due_date(message):
 # Команда /list для просмотра всех задач
 @bot.message_handler(commands=['list'])
 def list_tasks(message):
-    cursor.execute('SELECT id, title, due_date, description FROM tasks WHERE user_id = ?', (message.from_user.id,))
-    tasks = cursor.fetchall()
+    tasks = easy_sql.fetchall('tasks.db', 'tasks',
+                              ['id', 'title', 'due_date', 'description'],
+                              f'user_id = {message.from_user.id}')
     if tasks:
         response = "Ваши задачи:\n"
         for task in tasks:
-            response += f"{task[0]}. {task[1]} (до {task[2]})\n    {task[3]}\n"
+            response += f"{task['id']}. {task['title']} (до {task['due_date']})\n    {task['description']}\n"
     else:
         response = "У вас нет задач."
     bot.send_message(message.chat.id, response)
