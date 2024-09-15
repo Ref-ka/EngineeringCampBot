@@ -1,22 +1,13 @@
 import telebot
-import sqlite3
+import easy_sql
 
-
-def init_db():
-    conn = sqlite3.connect('notes.db')
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS notes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            note TEXT NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
-
-
-init_db()
+'''
+У вас должна быть создана база данных с названием notes.db, названием таблицы notes,
+колонками:
+id, integer, primary key, autoincrement
+user_id, integer, not null
+note, text, not null
+'''
 
 # Замените 'YOUR_BOT_TOKEN' на токен вашего бота
 API_TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'
@@ -24,19 +15,11 @@ bot = telebot.TeleBot(API_TOKEN)
 
 # Функция для добавления заметки в базу данных
 def add_note(user_id, note):
-    conn = sqlite3.connect('notes.db')
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO notes (user_id, note) VALUES (?, ?)', (user_id, note))
-    conn.commit()
-    conn.close()
+    easy_sql.insert('notes.db', 'notes', {'user_id': user_id, 'note': note})
 
 # Функция для получения всех заметок пользователя
 def get_notes(user_id):
-    conn = sqlite3.connect('notes.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT note FROM notes WHERE user_id = ?', (user_id,))
-    notes = cursor.fetchall()
-    conn.close()
+    notes = easy_sql.fetchall('notes.db', 'notes', ['note'], f'user_id = {user_id}')
     return notes
 
 # Обработчик команды /start
@@ -59,7 +42,7 @@ def add_note_handler(message):
 def list_notes_handler(message):
     notes = get_notes(message.from_user.id)
     if notes:
-        response = "Ваши заметки:\n" + "\n".join([note[0] for note in notes])
+        response = "Ваши заметки:\n" + "\n".join([note['note'] for note in notes])
     else:
         response = "У вас пока нет заметок."
     bot.reply_to(message, response)
