@@ -1,0 +1,59 @@
+ГАЙД ПО ПРАКТИЧЕСКОЙ РАБОТЕ day_2_2.py
+
+Первая часть
+Напиши этот блок кода
+--------------------------------------------
+import telebot
+import easy_sql
+
+API_TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'
+bot = telebot.TeleBot(API_TOKEN)
+
+bot.polling()
+--------------------------------------------
+
+Вторая часть
+Добавь этот блок кода после "bot = telebot.TeleBot(API_TOKEN)"
+--------------------------------------------
+def add_note(user_id, note):
+    easy_sql.insert('notes.db', 'notes', {'user_id': user_id, 'note': note})
+
+def get_notes(user_id):
+    notes = easy_sql.fetchall('notes.db', 'notes', ['note'], f'user_id = {user_id}')
+    return notes
+--------------------------------------------
+
+Третья часть
+Добавь этот блок кода после функции get_notes
+--------------------------------------------
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    bot.reply_to(message, "Добро пожаловать! Вы можете добавлять "
+                          "заметки с помощью команды /add и просматривать их с помощью команды /notes.")
+--------------------------------------------
+
+Четвертая часть
+Добавь этот блок кода после функции send_welcome
+--------------------------------------------
+@bot.message_handler(commands=['add'])
+def add_note_handler(message):
+    note = message.text[len('/add '):].strip()
+    if note:
+        add_note(message.from_user.id, note)
+        bot.reply_to(message, "Заметка добавлена!")
+    else:
+        bot.reply_to(message, "Пожалуйста, введите текст заметки после команды /add.")
+--------------------------------------------
+
+Пятая часть
+Добавь этот блок кода после функции add_note_handler
+--------------------------------------------
+@bot.message_handler(commands=['notes'])
+def list_notes_handler(message):
+    notes = get_notes(message.from_user.id)
+    if notes:
+        response = "Ваши заметки:\n" + "\n".join([note['note'] for note in notes])
+    else:
+        response = "У вас пока нет заметок."
+    bot.reply_to(message, response)
+--------------------------------------------

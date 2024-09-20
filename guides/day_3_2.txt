@@ -1,0 +1,79 @@
+ГАЙД ПО ПРАКТИЧЕСКОЙ РАБОТЕ day_2_2.py
+
+Первая часть
+Напиши этот блок кода
+--------------------------------------------
+import telebot
+from telebot import types
+from telebot.handler_backends import State, StatesGroup
+from telebot.custom_filters import StateFilter
+
+API_TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'
+bot = telebot.TeleBot(API_TOKEN)
+
+bot.polling()
+--------------------------------------------
+
+Вторая часть
+Добавь этот блок кода после "bot = telebot.TeleBot(API_TOKEN)"
+--------------------------------------------
+class MyStates(StatesGroup):
+    name = State()
+    eye_color = State()
+    hobby = State()
+
+state_storage = {}
+--------------------------------------------
+
+Третья часть
+Добавь этот блок кода после определения переменной state_storage
+--------------------------------------------
+@bot.message_handler(commands=['start'])
+def start_message(message: types.Message):
+    bot.set_state(message.from_user.id, MyStates.name, message.chat.id)
+    bot.send_message(message.chat.id, "Привет! Как тебя зовут?")
+--------------------------------------------
+
+Четвертая часть
+Добавь этот блок кода после функции start_message
+--------------------------------------------
+@bot.message_handler(state=MyStates.name)
+def get_name(message: types.Message):
+    name = message.text
+    if message.chat.id not in state_storage:
+        state_storage[message.chat.id] = {}
+    state_storage[message.chat.id]['name'] = name
+    bot.set_state(message.from_user.id, MyStates.eye_color, message.chat.id)
+    bot.send_message(message.chat.id, f"Приятно познакомиться, {name}!\nНапиши свой цвет глаз.")
+--------------------------------------------
+
+Пятая часть
+Добавь этот блок кода после функции get_name
+--------------------------------------------
+@bot.message_handler(state=MyStates.eye_color)
+def get_eye_color(message: types.Message):
+    eye_color = message.text
+    state_storage[message.chat.id]['eye_color'] = eye_color
+    bot.set_state(message.from_user.id, MyStates.hobby, message.chat.id)
+    bot.send_message(message.chat.id, f"Отлично!\nТеперь напиши своё хобби.")
+--------------------------------------------
+
+Шестая часть
+Добавь этот блок кода после функции get_eye_color
+--------------------------------------------
+@bot.message_handler(state=MyStates.hobby)
+def get_hobby(message: types.Message):
+    hobby = message.text
+    state_storage[message.chat.id]['hobby'] = hobby
+    data = state_storage[message.chat.id]
+    bot.delete_state(message.from_user.id, message.chat.id)
+    bot.send_message(message.chat.id, f"Вот всё что я запомнил:\nТебя зовут {data['name']}\n"
+                                      "Твой цвет глаз {data['eye_color']}\nТвое хобби {data['hobby']}")
+
+bot.add_custom_filter(StateFilter(bot))
+--------------------------------------------
+
+
+
+
+
