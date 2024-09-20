@@ -36,10 +36,15 @@ def send_goodbye(message):
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
     username = message.from_user.first_name
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"))
     if username:
-        bot.reply_to(message, f"Извините, {username}, я вас не понял. Попробуйте использовать команды /start или /bye.")
+        bot.send_message(message.chat.id,
+                         f"Извините, {username}, я вас не понял. Попробуйте использовать команды /greet или /bye.",
+                         reply_markup=markup)
     else:
-        bot.reply_to(message, "Извините, я вас не понял. Попробуйте использовать команды /start или /bye.")
+        bot.send_message(message.chat.id, "Извините, я вас не понял. Попробуйте использовать команды /greet или /bye.",
+                         reply_markup=markup)
 
 # Запуск бота
 bot.polling()
