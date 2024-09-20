@@ -25,7 +25,8 @@ def get_notes(user_id):
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "Добро пожаловать! Вы можете добавлять заметки с помощью команды /add и просматривать их с помощью команды /notes.")
+    bot.reply_to(message, "Добро пожаловать! Вы можете добавлять "
+                          "заметки с помощью команды /add и просматривать их с помощью команды /notes.")
 
 # Обработчик команды /add
 @bot.message_handler(commands=['add'])

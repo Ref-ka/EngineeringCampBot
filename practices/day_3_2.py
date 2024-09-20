@@ -47,7 +47,8 @@ def get_hobby(message: types.Message):
     state_storage[message.chat.id]['hobby'] = hobby
     data = state_storage[message.chat.id]
     bot.delete_state(message.from_user.id, message.chat.id)
-    bot.send_message(message.chat.id, f"Вот всё что я запомнил:\nТебя зовут {data['name']}\nТвой цвет глаз {data['eye_color']}\nТвое хобби {data['hobby']}")
+    bot.send_message(message.chat.id, f"Вот всё что я запомнил:\nТебя зовут {data['name']}\n"
+                                      "Твой цвет глаз {data['eye_color']}\nТвое хобби {data['hobby']}")
 
 # Добавляем фильтр состояний
 bot.add_custom_filter(StateFilter(bot))

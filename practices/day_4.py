@@ -30,7 +30,8 @@ class TaskStates(StatesGroup):
 # Команда /start
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(message.chat.id, "Привет! Я TaskMasterBot. Я помогу тебе управлять твоими задачами. Используй /add для добавления новой задачи.")
+    bot.send_message(message.chat.id, "Привет! Я TaskMasterBot. Я помогу тебе управлять твоими задачами."
+                                      " Используй /add для добавления новой задачи.")
 
 # Команда /add для добавления новой задачи
 @bot.message_handler(commands=['add'])
