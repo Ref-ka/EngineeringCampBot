@@ -47,19 +47,6 @@ def do_on_goodbye(message):
     else:
         bot.reply_to(message, "До свидания! Надеюсь, скоро увидимся снова.")
 
-# Обработчик текстовых сообщений
-@bot.message_handler(func=lambda message: True)
-def handle_all_message(message):
-    username = message.from_user.first_name
-    markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"))
-    if username:
-        bot.send_message(message.chat.id,
-                         f"Извините, {username}, я вас не понял. Попробуйте использовать команды /greet или /bye.",
-                         reply_markup=markup)
-    else:
-        bot.send_message(message.chat.id, "Извините, я вас не понял. Попробуйте использовать команды /greet или /bye.",
-                         reply_markup=markup)
 
 # Обработчик команды /time
 @bot.message_handler(commands=['time'])
@@ -79,6 +66,20 @@ def do_on_random(message):
 def do_on_joke(message):
     joke = random.choice(jokes)
     bot.reply_to(message, joke)
+
+# Обработчик текстовых сообщений
+@bot.message_handler(func=lambda message: True)
+def handle_all_message(message):
+    username = message.from_user.first_name
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"))
+    if username:
+        bot.send_message(message.chat.id,
+                         f"Извините, {username}, я вас не понял. Попробуйте использовать команды /greet или /bye.",
+                         reply_markup=markup)
+    else:
+        bot.send_message(message.chat.id, "Извините, я вас не понял. Попробуйте использовать команды /greet или /bye.",
+                         reply_markup=markup)
 
 # Запуск бота
 bot.infinity_polling()
