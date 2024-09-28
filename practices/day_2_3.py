@@ -22,7 +22,9 @@ jokes = [
 @bot.message_handler(commands=['start'])
 def do_on_start(message):
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"))
+    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"),
+               KeyboardButton("/time"), KeyboardButton("/random"),
+               KeyboardButton("/joke"))
     bot.send_message(message.chat.id, "Я умею здороваться и прощаться, "
                      "а еще я могу сообщить текущее время, выдать случайное "
                      "число и рассказать шутку про программистов. \nИспользуй "
