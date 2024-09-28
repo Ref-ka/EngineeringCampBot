@@ -14,15 +14,17 @@ jokes = [
     "Почему программисты не любят природу? Слишком много багов.",
     "Сколько программистов нужно, чтобы вкрутить лампочку? Ни одного, это аппаратная проблема.",
     "Почему программисты путают Рождество с Хэллоуином? Потому что Oct 31 == Dec 25.",
-    "Программист заходит в бар, заказывает 1 пиво. "
-    "Заказывает 10 пива. Заказывает 0 пива. Заказывает -1 пива. Заказывает qwerty пива."
+    "Программист заходит в бар, заказывает 1 пиво. Заказывает 10 пива. Заказывает 0 пива. "
+    "Заказывает -1 пива. Заказывает qwerty пива."
 ]
 
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def do_on_start(message):
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"))
+    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"),
+               KeyboardButton("/time"), KeyboardButton("/random"),
+               KeyboardButton("/joke"))
     bot.send_message(message.chat.id, "Я умею здороваться и прощаться, "
                      "а еще я могу сообщить текущее время, выдать случайное "
                      "число и рассказать шутку про программистов. \nИспользуй "
@@ -80,6 +82,7 @@ def handle_all_message(message):
     else:
         bot.send_message(message.chat.id, "Извините, я вас не понял. Попробуйте использовать команды /greet или /bye.",
                          reply_markup=markup)
+
 
 # Запуск бота
 bot.infinity_polling()
