@@ -21,13 +21,10 @@ jokes = [
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def do_on_start(message):
-    markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"))
     bot.send_message(message.chat.id, "Я умею здороваться и прощаться, "
                      "а еще я могу сообщить текущее время, выдать случайное "
                      "число и рассказать шутку про программистов. \nИспользуй "
-                     "команды  /greet и /bye, /time, /random и /joke.",
-                     reply_markup=markup)
+                     "команды  /greet и /bye, /time, /random и /joke.")
 
 # Обработчик команды /greet
 @bot.message_handler(commands=['greet'])
@@ -71,15 +68,11 @@ def do_on_joke(message):
 @bot.message_handler(func=lambda message: True)
 def handle_all_message(message):
     username = message.from_user.first_name
-    markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"))
     if username:
         bot.send_message(message.chat.id,
-                         f"Извините, {username}, я вас не понял. Попробуйте использовать команды /greet или /bye.",
-                         reply_markup=markup)
+                         f"Извините, {username}, я вас не понял. Попробуйте использовать команды /greet или /bye.")
     else:
-        bot.send_message(message.chat.id, "Извините, я вас не понял. Попробуйте использовать команды /greet или /bye.",
-                         reply_markup=markup)
+        bot.send_message(message.chat.id, "Извините, я вас не понял. Попробуйте использовать команды /greet или /bye.")
 
 # Запуск бота
 bot.infinity_polling()

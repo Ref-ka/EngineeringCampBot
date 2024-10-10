@@ -10,10 +10,7 @@ bot = telebot.TeleBot(API_TOKEN)
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def do_on_start(message):
-    markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"))
-    bot.send_message(message.chat.id, "Я умею здороваться и прощаться! Используйте команды /greet и /bye",
-                     reply_markup=markup)
+    bot.send_message(message.chat.id, "Я умею здороваться и прощаться! Используйте команды /greet и /bye")
 
 # Обработчик команды /greet
 @bot.message_handler(commands=['greet'])
@@ -37,15 +34,11 @@ def do_on_goodbye(message):
 @bot.message_handler(func=lambda message: True)
 def handle_all_message(message):
     username = message.from_user.first_name
-    markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(KeyboardButton("/greet"), KeyboardButton("/bye"))
     if username:
         bot.send_message(message.chat.id,
-                         f"Извините, {username}, я вас не понял. Попробуйте использовать команды /greet или /bye.",
-                         reply_markup=markup)
+                         f"Извините, {username}, я вас не понял. Попробуйте использовать команды /greet или /bye.")
     else:
-        bot.send_message(message.chat.id, "Извините, я вас не понял. Попробуйте использовать команды /greet или /bye.",
-                         reply_markup=markup)
+        bot.send_message(message.chat.id, "Извините, я вас не понял. Попробуйте использовать команды /greet или /bye.")
 
 # Запуск бота.
 # Выполняйте эту инструкцию самой последней!
