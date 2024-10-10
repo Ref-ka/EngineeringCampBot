@@ -1,5 +1,4 @@
 import telebot
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
 # Замените 'YOUR_API_TOKEN' на токен вашего бота, 
 # который вы получили от BotFather.
