@@ -26,7 +26,7 @@ def do_on_goodbye(message):
 # Обработчик всех текстовых сообщений
 @bot.message_handler(func=lambda message: True)
 def handle_all_message(message):
-    bot.send_message(message.chat.id, "Извините, я вас не понял. Попробуйте использовать команды /greet или /bye.")
+    bot.reply_to(message, "Извините, я вас не понял. Попробуйте использовать команды /greet или /bye.")
 
 # Запуск бота.
 # Выполняйте эту инструкцию самой последней!
