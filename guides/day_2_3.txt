@@ -17,20 +17,17 @@ bot.polling()
 Вторая часть
 Добавь этот блок кода после "bot = telebot.TeleBot(API_TOKEN)"
 --------------------------------------------
-jokes = [
-    "Почему программисты не любят природу? Слишком много багов.",
-    "Сколько программистов нужно, чтобы вкрутить лампочку? Ни одного, это аппаратная проблема.",
-    "Почему программисты путают Рождество с Хэллоуином? Потому что Oct 31 == Dec 25.",
-    "Программист заходит в бар, заказывает 1 пиво. "
-    "Заказывает 10 пива. Заказывает 0 пива. Заказывает -1 пива. Заказывает qwerty пива."
-]
-
 @bot.message_handler(commands=['start'])
 def do_on_start(message):
     bot.send_message(message.chat.id, "Я умею здороваться и прощаться, "
-                     "а еще я могу сообщить текущее время, выдать случайное "
-                     "число и рассказать шутку про программистов. \nИспользуй "
-                     "команды  /greet и /bye, /time, /random и /joke.")
+                     "а еще я могу сообщить текущее время, выдать "
+                     "случайное число и рассказать шутку про "
+                     "программистов. \nИспользуй "
+                     "команды  /greet и /bye, /time, "
+                     "/random и /joke. \nНу и напоследок: вы "
+                     "можете добавлять заметки с помощью команды "
+                     " /add и просматривать их с помощью команды"
+                     " /notes.")
 --------------------------------------------
 
 Третья часть
@@ -79,6 +76,14 @@ def do_on_random(message):
 Пятая часть
 Добавь этот блок кода после функции do_on_random
 --------------------------------------------
+jokes = [
+    "Почему программисты не любят природу? Слишком много багов.",
+    "Сколько программистов нужно, чтобы вкрутить лампочку? Ни одного, это аппаратная проблема.",
+    "Почему программисты путают Рождество с Хэллоуином? Потому что Oct 31 == Dec 25.",
+    "Программист заходит в бар, заказывает 1 пиво. "
+    "Заказывает 10 пива. Заказывает 0 пива. Заказывает -1 пива. Заказывает qwerty пива."
+]
+
 @bot.message_handler(commands=['joke'])
 def do_on_joke(message):
     joke = random.choice(jokes)
@@ -87,6 +92,38 @@ def do_on_joke(message):
 
 Пятая часть
 Добавь этот блок кода после функции do_on_joke
+--------------------------------------------
+user_notes = {}
+
+def add_note(user_id, note):
+    if user_id not in user_notes:
+        user_notes[user_id] = []
+    user_notes[user_id].append(note)
+
+def get_notes(user_id):
+    return user_notes.get(user_id, [])
+
+@bot.message_handler(commands=['add'])
+def add_note_handler(message):
+    note = message.text[len('/add'):].strip()
+    if note:
+        add_note(message.from_user.id, note)
+        bot.reply_to(message, "Заметка добавлена!")
+    else:
+        bot.reply_to(message, "Пожалуйста, введите текст заметки после команды /add")
+
+@bot.message_handler(commands=['notes'])
+def list_notes_handler(message):
+    notes = get_notes(message.from_user.id)
+    if notes:
+        response = "Ваши заметки:\n" + "\n".join(notes)
+    else:
+        response = "У вас пока нет заметок."
+    bot.reply_to(message, response)
+--------------------------------------------
+
+Шестая часть
+Добавь этот блок кода после функции list_notes_handler
 --------------------------------------------
 @bot.message_handler(func=lambda message: True)
 def handle_all_message(message):
