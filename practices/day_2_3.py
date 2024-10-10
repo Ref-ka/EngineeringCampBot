@@ -1,5 +1,4 @@
 import telebot
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 import random
 import datetime
 
