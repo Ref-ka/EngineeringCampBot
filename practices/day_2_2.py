@@ -2,14 +2,15 @@ import telebot
 
 # Замените 'YOUR_API_TOKEN' на токен вашего бота, 
 # который вы получили от BotFather.
-API_TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'
+API_TOKEN = 'YOUR_API_TOKEN'
 
 bot = telebot.TeleBot(API_TOKEN)
 
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def do_on_start(message):
-    bot.send_message(message.chat.id, "Я умею здороваться и прощаться! Используйте команды /greet и /bye")
+    bot.send_message(message.chat.id,
+                     "Привет! Я ваш дружелюбный бот. Для взаимодействия используйте команды /greet или /bye.")
 
 # Обработчик команды /greet
 @bot.message_handler(commands=['greet'])

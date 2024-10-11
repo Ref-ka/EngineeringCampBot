@@ -2,7 +2,7 @@ import telebot
 
 # Не забудьте заменить 'YOUR_API_TOKEN'
 #     на токен вашего бота, который вы получили от BotFather
-API_TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'
+API_TOKEN = 'YOUR_API_TOKEN'
 
 # Создаем сущность нашего бота
 bot = telebot.TeleBot(API_TOKEN)
@@ -11,7 +11,7 @@ bot = telebot.TeleBot(API_TOKEN)
 @bot.message_handler(commands=['start'])
 def do_on_start(message):
     bot.send_message(message.chat.id,
-                     "Привет! Я ваш дружелюбный бот. Для взаимодействия используйте команды /start или /bye.")
+                     "Привет! Я ваш дружелюбный бот. Для взаимодействия используйте команды /greet или /bye.")
 
 # Обработчик команды /greet
 @bot.message_handler(commands=['greet'])
