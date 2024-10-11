@@ -3,7 +3,7 @@ import random
 import datetime
 
 
-TOKEN = 'YOUR_TELEGRAM_BOT_API_TOKEN'
+TOKEN = 'YOUR_API_TOKEN'
 
 # Инициализация бота
 bot = telebot.TeleBot(TOKEN)
@@ -11,7 +11,8 @@ bot = telebot.TeleBot(TOKEN)
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def do_on_start(message):
-    bot.send_message(message.chat.id, "Я умею здороваться и прощаться, "
+    bot.send_message(message.chat.id, "Привет! Я ваш дружелюбный бот. " 
+                     "Я умею здороваться и прощаться, "
                      "а еще я могу сообщить текущее время, выдать "
                      "случайное число и рассказать шутку про "
                      "программистов. \nИспользуй "
